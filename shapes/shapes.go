@@ -21,14 +21,23 @@ func (rectangle Rectangle) Area() float64 {
 	return rectangle.Height * rectangle.Width
 }
 
-type Circles struct {
+type Circle struct {
 	Radius float64
 }
 
-func (circles Circles) Perimeter() float64 {
+func (circles Circle) Perimeter() float64 {
 	return 2 * math.Pi * circles.Radius
 }
 
-func (circles Circles) Area() float64 {
+func (circles Circle) Area() float64 {
 	return math.Pi * circles.Radius * circles.Radius
+}
+
+type Triangle struct {
+	Base   float64
+	Height float64
+}
+
+func (triangle Triangle) Area() float64 {
+	return triangle.Base * triangle.Height / 2
 }
