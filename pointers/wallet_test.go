@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"testing"
 )
 
@@ -31,7 +32,7 @@ func TestWall(t *testing.T) {
 		err := wallet.Withdraw(100)
 
 		assertBalance(t, wallet, startBalance)
-		assertError(t, err, InsufficientFundError)
+		assertError(t, err, ErrInsufficientFund)
 	})
 
 }
@@ -44,18 +45,18 @@ func assertBalance(t *testing.T, wallet Wallet, want Bitcom) {
 }
 
 func assertNoError(t *testing.T, got error) {
-	if got != nil {
+	if !errors.Is(got, nil) {
 		t.Fatal("get an error but didn't want one")
 	}
 }
 
 func assertError(t *testing.T, got error, want error) {
-	if got == nil {
+	if errors.Is(got, nil) {
 		// t.Fatal 被调用将停止测试，不需要返回更多的错误
 		// 否则，got.Error 将会因为空指针而引起Panic
 		t.Fatal("didn't get an error")
 	}
-	if got != want {
+	if !errors.Is(got, want) {
 		t.Errorf("got '%s', wnat '%s'", got, want)
 	}
 }

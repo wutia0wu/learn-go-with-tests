@@ -5,7 +5,9 @@ import (
 	"fmt"
 )
 
-var InsufficientFundError = errors.New("cannot withdraw, insufficientFund")
+// 错误变量：应该以 Err 开头
+// 错误类型：应该以 Error 结尾
+var ErrInsufficientFund = errors.New("cannot withdraw, insufficientFund")
 
 type Bitcom int
 
@@ -31,7 +33,7 @@ func (w *Wallet) Balance() Bitcom {
 
 func (w *Wallet) Withdraw(amount Bitcom) error {
 	if amount > w.balance {
-		return InsufficientFundError
+		return ErrInsufficientFund
 	}
 	w.balance -= amount
 	return nil
