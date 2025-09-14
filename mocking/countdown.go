@@ -20,6 +20,7 @@ type ConfigurableSleeper struct {
 	duration time.Duration
 }
 
+// 真正的 Sleeper 实现 main 执行条件
 func (o *ConfigurableSleeper) Sleep() {
 	time.Sleep(o.duration)
 }
@@ -34,6 +35,7 @@ func Countdown(out io.Writer, sleeper Sleeper) {
 		sleeper.Sleep()
 		fmt.Fprintln(out, i)
 	}
-	sleeper.Sleep()
+
 	fmt.Fprint(out, finalWorld)
+	sleeper.Sleep()
 }
