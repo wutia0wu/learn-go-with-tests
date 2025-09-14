@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"time"
 )
 
 const (
@@ -15,16 +16,16 @@ type Sleeper interface {
 	Sleep()
 }
 
-type SpySleeper struct {
-	Calls int
+type ConfigurableSleeper struct {
+	duration time.Duration
 }
 
-func (s *SpySleeper) Sleep() {
-	s.Calls++
+func (o *ConfigurableSleeper) Sleep() {
+	time.Sleep(o.duration)
 }
 
 func main() {
-	sleeper := &SpySleeper{}
+	sleeper := &ConfigurableSleeper{1 * time.Second}
 	Countdown(os.Stdout, sleeper)
 }
 

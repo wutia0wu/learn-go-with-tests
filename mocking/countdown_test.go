@@ -5,9 +5,17 @@ import (
 	"testing"
 )
 
+// 监视器： Mocking
+type SpySleeper struct {
+	Calls int
+}
+
+func (s *SpySleeper) Sleep() {
+	s.Calls++
+}
+
 func TestCountdown(t *testing.T) {
 	buffer := &bytes.Buffer{}
-	// 监视器： 模拟
 	spySleeper := &SpySleeper{}
 
 	Countdown(buffer, spySleeper)
