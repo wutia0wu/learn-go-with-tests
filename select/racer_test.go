@@ -7,23 +7,40 @@ import (
 	"time"
 )
 
+var threeSecondTimeout = 3 * time.Second
+
 func TestRacer(t *testing.T) {
+	t.Run("v0", func(t *testing.T) {
 
-	slowServer := makeDelayedServer(60 * time.Microsecond)
-	fastServer := makeDelayedServer(0 * time.Microsecond)
+		fastServer := makeDelayedServer(0 * time.Microsecond)
+		slowServer := makeDelayedServer(60 * time.Microsecond)
 
-	defer slowServer.Close()
-	defer fastServer.Close()
+		defer fastServer.Close()
+		defer slowServer.Close()
 
-	slowURL := slowServer.URL
-	fastURL := fastServer.URL
+		slowURL := slowServer.URL
+		fastURL := fastServer.URL
 
-	want := fastURL
-	got := Racer(slowURL, fastURL)
+		want := fastURL
+		got := Racer(slowURL, fastURL)
 
-	if got != want {
-		t.Errorf("slow: %s fast: %s \nwant: %s  got: %s", slowURL, fastURL, want, got)
-	}
+		if got != want {
+			t.Errorf("slow: %s fast: %s \nwant: %s  got: %s", slowURL, fastURL, want, got)
+		}
+	})
+
+	t.Run("return err if timeout 3s", func(t *testing.T) {
+		serverA := makeDelayedServer(5 * time.Second)
+		serverB := makeDelayedServer(2 * time.Second)
+
+		defer serverA.Close()
+		defer serverB.Close()
+
+		_, err := ConfigurableRacer(serverA.URL, serverB.URL, threeSecondTimeout)
+		if err == nil {
+			t.Errorf("expected an error but didn't get one")
+		}
+	})
 
 }
 
