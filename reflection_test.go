@@ -105,7 +105,36 @@ func TestWalk(t *testing.T) {
 				t.Errorf("got %v want %v", got, test.ExpectedCalls)
 			}
 		})
-
 	}
 
+	// 处理Map随机顺序问题
+	t.Run("with map", func(t *testing.T) {
+		aMap := map[string]string{
+			"City": "NewYork",
+			"Name": "Truman",
+		}
+
+		var got []string
+		Walk(aMap, func(input string) {
+			got = append(got, input)
+		})
+
+		assertContains(t, got, "NewYork")
+		assertContains(t, got, "Truman")
+
+	})
+
+}
+
+func assertContains(t *testing.T, haystack []string, needle string) {
+	contains := false
+	for _, x := range haystack {
+		if x == needle {
+			contains = true
+		}
+	}
+
+	if !contains {
+		t.Errorf("expected %+v to contain %s but it didn't", haystack, needle)
+	}
 }
