@@ -5,23 +5,27 @@ import "reflect"
 func Walk(x interface{}, fn func(input string)) {
 	val := getValue(x)
 
-	if val.Kind() == reflect.Slice {
+	walkValue := func(value reflect.Value) {
+		Walk(value.Interface(), fn)
+	}
+
+	switch val.Kind() {
+	case reflect.String:
+		fn(val.String())
+	case reflect.Struct:
+		for i := 0; i < val.NumField(); i++ {
+			walkValue(val.Field(i))
+		}
+	case reflect.Slice, reflect.Array:
 		for i := 0; i < val.Len(); i++ {
-			Walk(val.Index(i).Interface(), fn)
+			walkValue(val.Index(i))
 		}
-		return
-	}
-
-	for i := 0; i < val.NumField(); i++ {
-		field := val.Field(i)
-
-		switch field.Kind() {
-		case reflect.String:
-			fn(field.String())
-		case reflect.Struct:
-			Walk(field.Interface(), fn)
+	case reflect.Map:
+		for _, key := range val.MapKeys() {
+			walkValue(val.MapIndex(key))
 		}
 	}
+
 }
 
 // 指针类型的 Value 不能使用 NumField 方法，在执行此方法前需要调用 Elem() 提取底层值。

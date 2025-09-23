@@ -74,6 +74,24 @@ func TestWalk(t *testing.T) {
 			},
 			[]string{"NewYork", "Los Angeles"},
 		},
+
+		{
+			"struct with arrays field",
+			[2]Profile{
+				{"NewYork", 22},
+				{"Los Angeles", 20},
+			},
+			[]string{"NewYork", "Los Angeles"},
+		},
+
+		{
+			"struct with map field",
+			map[string]string{
+				"City": "NewYork",
+				"Name": "Truman",
+			},
+			[]string{"NewYork", "Truman"},
+		},
 	}
 
 	for _, test := range cases {
