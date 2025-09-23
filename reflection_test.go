@@ -1,6 +1,9 @@
 package reflction
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestWalk(t *testing.T) {
 
@@ -16,6 +19,42 @@ func TestWalk(t *testing.T) {
 			}{"Truman"},
 			[]string{"Truman"},
 		},
+
+		{
+			"struct with two field",
+			struct {
+				Name string
+				City string
+			}{"Truman", "NewYork"},
+			[]string{"Truman", "NewYork"},
+		},
+
+		{
+			"struct with int field",
+			struct {
+				Name string
+				Age  int
+			}{"Truman", 22},
+			[]string{"Truman"},
+		},
+
+		{
+			"struct with struct field",
+			struct {
+				Name    string
+				Profile struct {
+					City string
+					Age  int
+				}
+			}{"Truman", struct {
+				City string
+				Age  int
+			}{
+				"NewYork",
+				22,
+			}},
+			[]string{"Truman", "NewYork"},
+		},
 	}
 
 	for _, test := range cases {
@@ -25,12 +64,8 @@ func TestWalk(t *testing.T) {
 				got = append(got, input)
 			})
 
-			if len(got) != 1 {
-				t.Errorf("wrong number of function calls, got %d want %d", len(got), 1)
-			}
-
-			if got[0] != test.ExpectedCalls[0] {
-				t.Errorf("got %s want %s", got[0], test.ExpectedCalls[0])
+			if !reflect.DeepEqual(got, test.ExpectedCalls) {
+				t.Errorf("got %v want %v", got, test.ExpectedCalls)
 			}
 		})
 
