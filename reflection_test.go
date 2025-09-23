@@ -56,6 +56,24 @@ func TestWalk(t *testing.T) {
 			},
 			[]string{"Truman", "NewYork"},
 		},
+
+		{
+			"struct with opinter field",
+			&Person{
+				"Truman",
+				Profile{"NewYork", 22},
+			},
+			[]string{"Truman", "NewYork"},
+		},
+
+		{
+			"struct with slices field",
+			[]Profile{
+				{"NewYork", 22},
+				{"Los Angeles", 20},
+			},
+			[]string{"NewYork", "Los Angeles"},
+		},
 	}
 
 	for _, test := range cases {
